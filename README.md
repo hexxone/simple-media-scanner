@@ -39,7 +39,7 @@ The scanner maintains progress between runs and provides detailed error logging 
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/hexxone/simple-media-scanner.git
 cd simple-media-scanner
 ```
 
@@ -183,20 +183,6 @@ The FFmpeg error checking can be customized by modifying the `scan_file` method 
 3. **Progress File Corruption**
    - Delete `logs/progress.json` to reset progress
    - Restart the container
-
-### Debug Mode
-
-To enable more detailed logging:
-
-1. Modify the logging level in `src/media_scanner.py`:
-```python
-self.logger.setLevel(logging.DEBUG)
-```
-
-2. Rebuild and run the container:
-```bash
-docker compose up -d --build
-```
 
 ## Contributing
 
