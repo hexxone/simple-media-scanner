@@ -1,0 +1,72 @@
+﻿# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project specific
+logs/*
+!logs/.gitkeep
+*.log
+progress.json
+
+# Docker
+Dockerfile
+.dockerignore
+docker compose*
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+*.md
+
+# Testing
+tests/
+test/
+pytest.ini
+.coverage
+.tox/
+.pytest_cache/
+
+# Operating System
+.DS_Store
+Thumbs.db

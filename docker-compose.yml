@@ -1,0 +1,12 @@
+services:
+  simple-media-scanner:
+    container_name: simple-media-scanner
+    hostname: simple-media-scanner
+    image: hexxone/simple-media-scanner
+    build: .
+    volumes:
+      - ./media:/media:ro
+      - ./logs:/app/logs:rw
+    environment:
+      - MEDIA_PATH=/media # Folder to scan
+      - LOG_PATH=/app/logs
