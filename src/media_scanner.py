@@ -16,7 +16,7 @@ class MediaScanner:
         self.setup_logging()
         self.media_extensions = {
             '.mp4', '.mkv', '.avi', '.mov', '.wmv', 
-            '.flv', '.m4v', '.mpg', '.mpeg', '.m2ts'
+            '.flv', '.m4v', '.mpg', '.mpeg', '.m2ts', '.vob'
         }
         self.error_count = 0
         self.scanned_count = 0
