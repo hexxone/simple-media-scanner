@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 def parse_and_filter_errors(json_data):
-    # Create a nested defaultdict to store the tree structure
+    # Create a nested default-dict to store the tree structure
     tree = defaultdict(lambda: defaultdict(list))
 
     # Parse the JSON if it's a string, otherwise use the dict directly

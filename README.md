@@ -168,6 +168,11 @@ self.media_extensions = {
 
 The FFmpeg error checking can be customized by modifying the `scan_file` method in `src/media_scanner.py`.
 
+### Linting
+
+- `pip install pylint`
+- `pylint $(git ls-files '*.py')`
+
 ## Troubleshooting
 
 ### Common Issues

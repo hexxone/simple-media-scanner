@@ -3,6 +3,7 @@ import subprocess
 import shutil
 from pathlib import Path
 
+
 def run_ffmpeg(cmd, log_file):
     try:
         with open(log_file, 'w') as log:
@@ -12,6 +13,7 @@ def run_ffmpeg(cmd, log_file):
         print(f"Error running command: {' '.join(cmd)}\n{e}")
         return False
 
+
 def has_ffmpeg_errors(file_path):
     import subprocess
     cmd = [
@@ -20,10 +22,12 @@ def has_ffmpeg_errors(file_path):
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return bool(result.stderr.strip())
 
+
 def preserve_timestamp(source_file, target_file):
     """Copy the timestamp from source file to target file"""
     source_stat = os.stat(str(source_file))
     os.utime(str(target_file), (source_stat.st_atime, source_stat.st_mtime))
+
 
 def process_vob(vob_path):
     vob_path = Path(vob_path)
@@ -55,7 +59,7 @@ def process_vob(vob_path):
         preserve_timestamp(vob_path, remuxed)
 
     # Step 2: Check for errors in remuxed file
-    if remuxed.exists() and remuxed.stat().st_size > 1*1024*1024:
+    if remuxed.exists() and remuxed.stat().st_size > 1 * 1024 * 1024:
         if not has_ffmpeg_errors(remuxed):
             print(f"Remuxed file {remuxed} has no errors.")
             return remuxed
@@ -74,7 +78,7 @@ def process_vob(vob_path):
     if run_ffmpeg(cmd2, log2):
         preserve_timestamp(vob_path, mkv)
 
-    if mkv.exists() and mkv.stat().st_size > 1*1024*1024:
+    if mkv.exists() and mkv.stat().st_size > 1 * 1024 * 1024:
         if not has_ffmpeg_errors(mkv):
             print(f"Re-encoded MKV {mkv} has no errors.")
             return mkv
@@ -103,6 +107,7 @@ def process_vob(vob_path):
     print(f"Extracted streams: {m2v}, {mp2}")
     return None
 
+
 def process_folder(root_dir):
     root_dir = Path(root_dir)
 
@@ -130,8 +135,10 @@ def process_folder(root_dir):
             # Preserve the timestamp after moving the file
             preserve_timestamp(vob_file, new_name)
 
+
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description="Batch repair VOB files using ffmpeg.")
     parser.add_argument("input_folder", help="Root folder to scan for VOB files")
     args = parser.parse_args()

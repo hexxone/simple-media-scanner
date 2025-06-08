@@ -1,8 +1,8 @@
 ﻿import os
-import subprocess
-import shutil
-from pathlib import Path
 import re
+import subprocess
+from pathlib import Path
+
 
 def run_ffmpeg(cmd, log_file=None):
     try:
@@ -15,6 +15,7 @@ def run_ffmpeg(cmd, log_file=None):
     except Exception as e:
         print(f"Error running command: {' '.join(cmd)}\n{e}")
         return False
+
 
 def has_ffmpeg_errors(file_path):
     """
@@ -49,6 +50,7 @@ def has_ffmpeg_errors(file_path):
             print(f"  - {error}")
         return True
     return False
+
 
 def get_video_duration(file_path):
     """Get duration of video file in seconds"""
@@ -92,9 +94,9 @@ def create_trim_script(sequence_files, output_file, trim_duration=0.5, crossfade
             # Add crossfade filters except for the first file
             if i > 0:
                 filter_complex.extend([
-                    f'[v{i-1}][v{i}]xfade=transition=fade:duration={crossfade_duration}:'
-                    f'offset={duration-crossfade_duration}[v{i}out];',
-                    f'[a{i-1}][a{i}]acrossfade=d={crossfade_duration}[a{i}out];'
+                    f'[v{i - 1}][v{i}]xfade=transition=fade:duration={crossfade_duration}:'
+                    f'offset={duration - crossfade_duration}[v{i}out];',
+                    f'[a{i - 1}][a{i}]acrossfade=d={crossfade_duration}[a{i}out];'
                 ])
 
         return "", ''.join(filter_complex)
@@ -102,10 +104,12 @@ def create_trim_script(sequence_files, output_file, trim_duration=0.5, crossfade
         # For trim mode, just return the path (the actual work is done in merge_sequence)
         return Path('concat_script.txt'), None
 
+
 def preserve_timestamp(source_file, target_file):
     """Copy the timestamp from source file to target file"""
     source_stat = os.stat(str(source_file))
     os.utime(str(target_file), (source_stat.st_atime, source_stat.st_mtime))
+
 
 def convert_to_mkv(input_file):
     """Convert video file to MKV format with error correction"""
@@ -122,10 +126,10 @@ def convert_to_mkv(input_file):
         'ffmpeg', '-y',
         '-fflags', '+genpts',  # Generate presentation timestamps
         '-i', str(input_path),
-        '-c:v', 'libx264',     # Re-encode video to fix potential issues
+        '-c:v', 'libx264',  # Re-encode video to fix potential issues
         '-preset', 'medium',
         '-crf', '23',
-        '-c:a', 'aac',         # Re-encode audio to fix potential issues
+        '-c:a', 'aac',  # Re-encode audio to fix potential issues
         '-b:a', '192k',
         '-max_muxing_queue_size', '9999',  # Prevent muxing errors
         '-avoid_negative_ts', 'make_zero',  # Fix negative timestamps
@@ -143,6 +147,7 @@ def convert_to_mkv(input_file):
             return None
         return output_path
     return None
+
 
 def find_sequences(folder):
     """Find sequences of video files that should be merged"""
@@ -185,6 +190,7 @@ def find_sequences(folder):
                     merge_candidates[base_name] = [x[1] for x in sorted_files]
 
     return merge_candidates
+
 
 def merge_sequence(sequence_files, output_file, mode="trim", trim_duration=0.5, crossfade_duration=1.0):
     """Merge a sequence of video files with either trimming or crossfade"""
@@ -259,8 +265,8 @@ def merge_sequence(sequence_files, output_file, mode="trim", trim_duration=0.5, 
             'ffmpeg', '-y',
             *input_args,
             '-filter_complex', filter_script,
-            '-map', f'[v{len(sequence_files)-1}out]',
-            '-map', f'[a{len(sequence_files)-1}out]',
+            '-map', f'[v{len(sequence_files) - 1}out]',
+            '-map', f'[a{len(sequence_files) - 1}out]',
             '-c:v', 'libx264',
             '-preset', 'medium',
             '-crf', '23',
@@ -284,6 +290,7 @@ def merge_sequence(sequence_files, output_file, mode="trim", trim_duration=0.5, 
         return False
 
     return success
+
 
 def process_folder(root_dir):
     root_dir = Path(root_dir)
@@ -316,14 +323,16 @@ def process_folder(root_dir):
 
                 if merge == 'trim':
                     trim_duration = float(input("Enter trim duration in seconds (default 0.5): ") or 0.5)
-                    if merge_sequence(files, output_file, mode="trim", trim_duration=trim_duration) and not has_ffmpeg_errors(output_file):
+                    if merge_sequence(files, output_file, mode="trim",
+                                      trim_duration=trim_duration) and not has_ffmpeg_errors(output_file):
                         preserve_timestamp(files[0], output_file)
                         print("Merge successful!")
                     else:
                         print("Merge failed!")
                 else:  # crossfade
                     crossfade_duration = float(input("Enter crossfade duration in seconds (default 1.0): ") or 1.0)
-                    if merge_sequence(files, output_file, mode="crossfade", crossfade_duration=crossfade_duration) and not has_ffmpeg_errors(output_file):
+                    if merge_sequence(files, output_file, mode="crossfade",
+                                      crossfade_duration=crossfade_duration) and not has_ffmpeg_errors(output_file):
                         preserve_timestamp(files[0], output_file)
                         print("Merge successful!")
                     else:
@@ -331,8 +340,10 @@ def process_folder(root_dir):
     else:
         print("\nNo sequences found that need to be merged.")
 
+
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description="Convert videos to MKV and merge sequences")
     parser.add_argument("input_folder", help="Root folder to scan for video files")
     args = parser.parse_args()

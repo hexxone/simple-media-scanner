@@ -5,7 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 from pythonjsonlogger import json
-from src.progress_tracker import ProgressTracker
+from progress_tracker import ProgressTracker
+
 
 class MediaScanner:
     def __init__(self, media_path, log_path, is_non_interactive):
@@ -15,7 +16,7 @@ class MediaScanner:
         self.progress_tracker = ProgressTracker()
         self.setup_logging()
         self.media_extensions = {
-            '.mp4', '.mkv', '.avi', '.mov', '.wmv', 
+            '.mp4', '.mkv', '.avi', '.mov', '.wmv',
             '.flv', '.m4v', '.mpg', '.mpeg', '.m2ts', '.vob'
         }
         self.error_count = 0
@@ -25,11 +26,11 @@ class MediaScanner:
     def setup_logging(self):
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
-        log_file = self.log_path / f"media_scan_errors_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = self.log_path / f"scan_errors_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
         self.logger = logging.getLogger('media_scanner')
         self.logger.setLevel(logging.INFO)
         print(f"Starting error-logging to: {log_file}")
-        
+
         formatter = json.JsonFormatter('%(asctime)s %(levelname)s %(message)s')
         file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(formatter)
@@ -41,14 +42,14 @@ class MediaScanner:
             'ffmpeg', '-v', 'error', '-i', str(file_path),
             '-f', 'null', '-'
         ]
-        
+
         try:
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True
             )
-            
+
             if result.stderr:
                 self.error_count += 1
                 self.logger.error({
@@ -57,10 +58,10 @@ class MediaScanner:
                 })
                 self.progress_tracker.mark_file_scanned(str(file_path), "error")
                 return False
-            
+
             self.progress_tracker.mark_file_scanned(str(file_path), "ok")
             return True
-            
+
         except subprocess.SubprocessError as e:
             self.error_count += 1
             self.logger.error({
@@ -80,10 +81,10 @@ class MediaScanner:
     def scan_directory(self):
         """Scan all media files in the directory."""
         print(f"Starting media scan in: {self.media_path}")
-        
+
         media_files = list(self.find_media_files())
         print(f"Found: {len(media_files)} media files to scan.")
-        
+
         with tqdm(total=len(media_files), desc="Scanning files") as pbar:
             if self.is_non_interactive:
                 print(pbar)
@@ -94,7 +95,7 @@ class MediaScanner:
                     if self.is_non_interactive:
                         print(pbar)
                     continue
-                
+
                 self.scan_file(file_path)
                 self.scanned_count += 1
                 pbar.update(1)
@@ -110,6 +111,7 @@ class MediaScanner:
         print(f"Files with errors: {self.error_count}")
         print(f"Error log location: {self.log_path}")
 
+
 def main():
     media_path = os.getenv('MEDIA_PATH', '/media')
     log_path = os.getenv('LOG_PATH', 'logs')
@@ -117,10 +119,11 @@ def main():
 
     if is_non_interactive:
         print("Running in non-interactive mode.")
-    
+
     scanner = MediaScanner(media_path, log_path, is_non_interactive)
     scanner.scan_directory()
     scanner.print_summary()
+
 
 if __name__ == "__main__":
     main()

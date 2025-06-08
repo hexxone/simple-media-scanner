@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 
+
 class ProgressTracker:
     def __init__(self, progress_file="logs/progress.json"):
         self.progress_file = progress_file
