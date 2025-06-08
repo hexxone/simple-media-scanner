@@ -102,59 +102,6 @@ def create_trim_script(sequence_files, output_file, trim_duration=0.5, crossfade
         # For trim mode, just return the path (the actual work is done in merge_sequence)
         return Path('concat_script.txt'), None
 
-
-# def create_trim_script(sequence_files, output_file, trim_duration=0.5, crossfade_duration=1.0, mode="trim"):
-#     """
-#     Create a complex filter script for merging videos
-#     mode can be either "trim" or "crossfade"
-#     """
-#     script_lines = []
-#     filter_complex = []
-#     inputs = []
-#
-#
-#     for i, file in enumerate(sequence_files):
-#         duration = get_video_duration(file)
-#         if duration is None:
-#             print(f"Could not determine duration for {file}")
-#             return None
-#
-#         if mode == "trim" and i < len(sequence_files) - 1:
-#             # Trim the end of each clip except the last one
-#             trim_end = duration - trim_duration
-#             script_lines.append(f"file '{file}'")
-#             script_lines.append(f"duration {trim_end}")
-#         elif mode == "crossfade" and i < len(sequence_files) - 1:
-#             # For crossfade, we need to handle both video and audio transitions
-#             inputs.append(f"-i {file}")
-#
-#             if i == 0:
-#                 filter_complex.extend([
-#                     f"[{i}:v]setpts=PTS-STARTPTS[v{i}];",
-#                     f"[{i}:a]asetpts=PTS-STARTPTS[a{i}];"
-#                 ])
-#             else:
-#                 filter_complex.extend([
-#                     f"[{i}:v]setpts=PTS-STARTPTS[v{i}];",
-#                     f"[{i}:a]asetpts=PTS-STARTPTS[a{i}];",
-#                     f"[v{i-1}][v{i}]xfade=transition=fade:duration={crossfade_duration}:offset={duration-crossfade_duration}[v{i}out];",
-#                     f"[a{i-1}][a{i}]acrossfade=d={crossfade_duration}[a{i}out];"
-#                 ])
-#         else:
-#             # Last file or trim mode
-#             script_lines.append(f"file '{file}'")
-#
-#     if mode == "trim":
-#         # Create a simple concat script
-#         script_path = Path('concat_script.txt')
-#         with open(script_path, 'w') as f:
-#             f.write('\n'.join(script_lines))
-#         return script_path
-#     elif mode == "crossfade":
-#         # Create a complex filter script
-#         filter_script = ';'.join(filter_complex)
-#         return inputs, filter_script
-
 def preserve_timestamp(source_file, target_file):
     """Copy the timestamp from source file to target file"""
     source_stat = os.stat(str(source_file))
