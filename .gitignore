@@ -46,3 +46,9 @@ progress.json
 # Operating System
 .DS_Store
 Thumbs.db
+
+# Coverage reports
+/.coverage
+
+# Test specific caches (though often covered by global __pycache__/)
+tests/__pycache__/

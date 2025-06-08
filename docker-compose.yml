@@ -4,9 +4,16 @@ services:
     hostname: simple-media-scanner
     image: hexxone/simple-media-scanner
     build: .
+    # Default command to run the 'process' pipeline
+    command: python src/main.py process /media --output-path /app/output --log-path /app/logs --non-interactive
     volumes:
-      - ./media:/media:ro
-      - ./logs:/app/logs:rw
+      - ./media:/media:ro        # Input media files
+      - ./logs:/app/logs:rw      # Application logs
+      - ./output:/app/output:rw  # Processed files (repairs, merges)
+    # Environment variables are no longer strictly needed for path configuration
+    # as paths are passed via command arguments. Kept for potential other uses or reference.
     environment:
-      - MEDIA_PATH=/media # Folder to scan
-      - LOG_PATH=/app/logs
+      # - MEDIA_PATH=/media # No longer directly used by CLI in this way
+      # - LOG_PATH=/app/logs # No longer directly used by CLI in this way
+      - PYTHONUNBUFFERED=1 # Already in Dockerfile, but good practice here too
+      - NON_INTERACTIVE=True # Already in Dockerfile, but good practice here too

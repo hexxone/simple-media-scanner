@@ -18,4 +18,5 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 ENV NON_INTERACTIVE=True
-CMD ["python", "src/media_scanner.py"]
+# CMD ["python", "src/media_scanner.py"] # Old command
+CMD ["python", "src/main.py", "--help"] # New command, runs CLI help
