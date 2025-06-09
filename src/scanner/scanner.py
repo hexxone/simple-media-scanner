@@ -6,8 +6,8 @@ from tqdm import tqdm
 # No longer needed directly, setup_logging from core.log_utils will handle json formatting
 # from pythonjsonlogger import json
 from .progress_tracker import ProgressTracker
-from src.core.log_utils import setup_logging
-from src.core.ffmpeg_utils import has_ffmpeg_errors
+from core.log_utils import setup_logging
+from core.ffmpeg_utils import has_ffmpeg_errors
 
 
 class MediaScanner:

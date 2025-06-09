@@ -1,20 +1,22 @@
 import argparse
-import os
-from pathlib import Path
 import logging
 import shutil # For copying files in process command
+from pathlib import Path
+from typing import Optional
 
-from src.scanner.scanner import MediaScanner
-# from src.scanner.progress_tracker import ProgressTracker # Not directly used by CLI yet
-from src.repair.repairer import repair_media_file
-from src.merger.merger import find_and_merge_sequences_in_folder
-from src.core.log_utils import setup_logging # Renamed import alias for clarity
-from src.core.ffmpeg_utils import has_ffmpeg_errors # For process command and potentially others
-from src.reporter import parse_and_filter_errors_from_log, print_error_tree
-
+from scanner.scanner import MediaScanner
+# from scanner.progress_tracker import ProgressTracker # Not directly used by CLI yet
+from repair.repairer import repair_media_file
+from merger.merger import find_and_merge_sequences_in_folder
+from core.log_utils import setup_logging # Renamed import alias for clarity
+from core.ffmpeg_utils import has_ffmpeg_errors # For process command and potentially others
+from reporter import print_error_tree, parse_and_filter_errors_from_json
 
 # Global variable for the main CLI logger
-cli_logger = None
+cli_logger: Optional[logging.Logger] = None
+
+# Define common video extensions like in handle_repair
+VIDEO_EXTENSIONS = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.m4v', '.mpg', '.mpeg', '.vob', '.ts', '.mts']
 
 def ensure_dir_exists(path: Path):
     """Ensure directory exists."""
@@ -37,7 +39,7 @@ def handle_report_errors(args):
         print(f"Error: Log file not found: {args.log_file_path}")
         return
 
-    error_tree = parse_and_filter_errors_from_log(args.log_file_path)
+    error_tree = parse_and_filter_errors_from_json(args.log_file_path)
     if error_tree is not None:
         print_error_tree(error_tree, cli_logger)
     else:
@@ -51,9 +53,6 @@ def handle_repair(args):
 
     input_path = Path(args.input_path_or_file)
     output_dir = Path(args.output_path)
-
-    # Define common video extensions to filter by if it's a directory
-    VIDEO_EXTENSIONS = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.m4v', '.mpg', '.mpeg', '.vob', '.ts', '.mts']
 
     files_to_repair = []
     if input_path.is_file():
@@ -112,9 +111,6 @@ def handle_process(args):
     ensure_dir_exists(args.log_path)
     ensure_dir_exists(args.output_path)
 
-    # Define common video extensions like in handle_repair
-    VIDEO_EXTENSIONS = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.m4v', '.mpg', '.mpeg', '.vob', '.ts', '.mts']
-
     # === Part 1: Scan ===
     cli_logger.info("Process Step 1: Scanning for media files and errors...")
     scanner = MediaScanner(media_path=args.input_path, log_path=args.log_path, is_non_interactive=args.non_interactive)
@@ -139,7 +135,7 @@ def handle_process(args):
 
     cli_logger.info(f"Process Step 2: Copying/Repairing files from {args.input_path} to {args.output_path}...")
 
-    files_for_merging_in_output = []
+    # files_for_merging_in_output = []
 
     # Iterate through all files in input_path that scanner would find
     # This is a simplified approach. A more robust way would be to parse scan logs.

@@ -2,8 +2,8 @@ import os
 # import subprocess # No longer directly used, core.ffmpeg_utils handles it
 # import shutil # No longer used as process_folder is removed
 from pathlib import Path
-from src.core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, preserve_timestamp
-from src.core.log_utils import setup_logging
+from core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, preserve_timestamp
+from core.log_utils import setup_logging
 import logging # For logger type hinting and direct use if needed
 
 # Placeholder for old/problematic formats

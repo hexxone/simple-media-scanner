@@ -15,7 +15,7 @@ def setup_logging(log_path, logger_name, is_json_format=True):
         logging.Logger: Configured logger instance.
     """
     log_path = Path(log_path)
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.INFO)

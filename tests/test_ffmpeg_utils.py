@@ -4,7 +4,7 @@ from pathlib import Path
 import os # For os.stat_result and utime constants
 
 # Functions to test
-from src.core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, get_video_duration, preserve_timestamp
+from core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, get_video_duration, preserve_timestamp
 
 class TestFfmpegUtils(unittest.TestCase):
 

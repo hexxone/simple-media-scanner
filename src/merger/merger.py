@@ -4,15 +4,15 @@ import subprocess # Still needed for get_video_duration if kept local, but it wa
 from pathlib import Path
 import logging # For logger type hinting and direct use if needed
 
-from src.core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, preserve_timestamp, get_video_duration
-from src.core.log_utils import setup_logging
+from core.ffmpeg_utils import run_ffmpeg, has_ffmpeg_errors, preserve_timestamp, get_video_duration
+from core.log_utils import setup_logging
 
 # Initialize logger for this module
 # Using a generic name, specific functions might create child loggers or use this one.
 # Log path for module-level logger can be defined or configured elsewhere.
 # For now, let's assume setup_logging handles the path if not fully specified.
 # This top-level logger can be used by functions directly or they can create children.
-logger = setup_logging(Path("logs/merger.log"), 'media_merger')
+logger = setup_logging("logs/merger.log", 'media_merger')
 
 
 # Removed local run_ffmpeg and has_ffmpeg_errors, preserve_timestamp as they are imported from core.ffmpeg_utils
